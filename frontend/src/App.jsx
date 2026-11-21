@@ -6,7 +6,6 @@ import Footer from './components/layout/Footer'
 import CartDrawer from './components/layout/CartDrawer'
 import SearchOverlay from './components/layout/SearchOverlay'
 import Toast from './components/layout/Toast'
-import BrandIntro from './components/intro/BrandIntro'
 import Loader from './components/intro/Loader'
 import PageTransition from './components/layout/PageTransition'
 import KaruChat from './components/chat/KaruChat'
@@ -42,30 +41,6 @@ function Page({ children }) {
   )
 }
 
-function shouldPlayIntro() {
-  if (typeof window === 'undefined') return false
-  const q = new URLSearchParams(window.location.search)
-  if (q.has('nointro')) return false
-  let seen = false
-  try {
-    seen = sessionStorage.getItem('tps.introSeen') === '1'
-  } catch {
-    /* storage blocked */
-  }
-  const play =
-    q.has('intro') ||
-    (window.location.pathname === '/' && !seen && !window.matchMedia('(prefers-reduced-motion: reduce)').matches)
-  if (play) {
-    try {
-      sessionStorage.setItem('tps.introSeen', '1')
-    } catch {
-      /* storage blocked */
-    }
-    document.documentElement.dataset.intro = 'playing' // header + page fade in after the intro
-  }
-  return play
-}
-
 // Minimal loading screen on every full page load (skipped with ?nointro / ?noloader, or reduced motion)
 function shouldShowLoader() {
   if (typeof window === 'undefined') return false
@@ -77,18 +52,13 @@ function shouldShowLoader() {
 }
 
 // decided once per page load (outside React so StrictMode double-renders can't change it)
-const INTRO_ON_LOAD = shouldPlayIntro()
 const LOADER_ON_LOAD = shouldShowLoader()
 
 export default function App() {
   const location = useLocation()
   const { cartOpen, searchOpen } = useStore()
-  // Brand intro: homepage only, once per browser session; never delays deep links.
-  // ?nointro skips it, ?intro forces it (handy when testing).
-  const [loading, setLoading] = useState(INTRO_ON_LOAD)
-  // loader first; the brand intro (home, first visit) mounts underneath as the loader lifts away
+  // minimal loading screen on every full page load, then straight into the page
   const [booting, setBooting] = useState(LOADER_ON_LOAD)
-  const [bootLifting, setBootLifting] = useState(!LOADER_ON_LOAD)
 
   useEffect(() => {
     startSmoothScroll()
@@ -101,9 +71,9 @@ export default function App() {
 
   // freeze the page behind open drawers/overlays
   useEffect(() => {
-    lockScroll(booting || loading || cartOpen || searchOpen)
-    document.documentElement.style.overflow = booting || loading ? 'hidden' : ''
-  }, [booting, loading, cartOpen, searchOpen])
+    lockScroll(booting || cartOpen || searchOpen)
+    document.documentElement.style.overflow = booting ? 'hidden' : ''
+  }, [booting, cartOpen, searchOpen])
 
   return (
     <>
@@ -137,17 +107,8 @@ export default function App() {
       <KaruChat />
       {booting && (
         <Loader
-          onExitStart={() => {
-            setBootLifting(true)
-            if (!INTRO_ON_LOAD) delete document.documentElement.dataset.intro
-          }}
-          onDone={() => setBooting(false)}
-        />
-      )}
-      {loading && bootLifting && (
-        <BrandIntro
           onExitStart={() => delete document.documentElement.dataset.intro}
-          onDone={() => setLoading(false)}
+          onDone={() => setBooting(false)}
         />
       )}
     </>
