@@ -34,14 +34,14 @@ the palm story/
 │   │
 │   ├── src/                   ← all website code
 │   │   ├── main.jsx           ← starts the app
-│   │   ├── App.jsx            ← page routes, smooth scroll, intro
+│   │   ├── App.jsx            ← page routes, smooth scroll, loading screen
 │   │   ├── index.css          ← colours, fonts, shared styles
 │   │   ├── pages/             ← one file per page (Home, Shop, Product, Cart, Checkout, OurStory, Gifting …)
 │   │   ├── components/
 │   │   │   ├── home/          ← homepage sections (hero, journey, collection, gifting, heritage)
 │   │   │   ├── layout/        ← header, footer, cart drawer, search, page transition
 │   │   │   ├── ui/            ← small reusable pieces (buttons, product card, logo, images)
-│   │   │   ├── intro/         ← the opening brand intro animation
+│   │   │   ├── intro/         ← the opening loading screen
 │   │   │   ├── chat/          ← Karu, the mascot chatbot
 │   │   │   └── art/           ← drawn placeholders shown until a photo exists
 │   │   ├── data/
@@ -49,7 +49,7 @@ the palm story/
 │   │   │   └── site.js        ← menu, banners, story text, shipping and promo settings
 │   │   ├── context/           ← cart and wishlist (saved in the browser)
 │   │   ├── hooks/             ← small React helpers
-│   │   └── lib/               ← smooth scroll, intro sound, chatbot answers
+│   │   └── lib/               ← smooth scroll, chatbot answers
 │   │
 │   ├── public/                ← files served as-is
 │   │   ├── favicon.png
@@ -63,7 +63,6 @@ the palm story/
 │   │   │   ├── heritage/      ← heritage section, wax seal, palm sketches
 │   │   │   ├── brand/         ← about, craft and gifting photos
 │   │   │   ├── checkout/      ← checkout page photos
-│   │   │   ├── intro/         ← opening intro still
 │   │   │   └── mascot/        ← Karu chatbot poses
 │   │   └── videos/            ← ALL videos (brand-intro.mp4, our-story-palm.mp4)
 │   │
